@@ -15,7 +15,7 @@
 #include <SPI.h>
 #include <RH_RF95.h>
 #include <RHEncryptedDriver.h>
-#include <AES.h>
+#include <ChaCha.h>
 
 // Singleton instance of radio driver
 RH_RF95 rf95;
@@ -35,7 +35,7 @@ double CSMATIME = 10; // Check the status of the channel every 10 ms
 
 // encryption
 
-AESSmall128 myCipher;                       // Instanciate a Speck block ciphering
+ChaCha myCipher;                       // Instanciate a Speck block ciphering
 RHEncryptedDriver myDriver(rf95, myCipher); // Instantiate the driver with those two
 
 unsigned char encryptkey[16] = {'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd', 'a', 'b', 'c', 'd'};
