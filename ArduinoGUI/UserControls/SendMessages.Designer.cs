@@ -31,11 +31,11 @@
             this.components = new System.ComponentModel.Container();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.sendMessage = new System.Windows.Forms.Button();
+            this.messageText = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label3 = new System.Windows.Forms.Label();
+            this.messageSentSuccess = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label2
@@ -57,26 +57,27 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Send Message";
             // 
-            // button1
+            // sendMessage
             // 
-            this.button1.Location = new System.Drawing.Point(109, 308);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(96, 44);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Send";
-            this.button1.UseVisualStyleBackColor = true;
+            this.sendMessage.Location = new System.Drawing.Point(109, 308);
+            this.sendMessage.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.sendMessage.Name = "sendMessage";
+            this.sendMessage.Size = new System.Drawing.Size(96, 44);
+            this.sendMessage.TabIndex = 9;
+            this.sendMessage.Text = "Send";
+            this.sendMessage.UseVisualStyleBackColor = true;
+            this.sendMessage.Click += new System.EventHandler(this.sendMessage_Click);
             // 
-            // textBox1
+            // messageText
             // 
-            this.textBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.OutlineButton;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.textBox1.Location = new System.Drawing.Point(109, 263);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(224, 22);
-            this.textBox1.TabIndex = 7;
+            this.messageText.AccessibleRole = System.Windows.Forms.AccessibleRole.OutlineButton;
+            this.messageText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.messageText.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.messageText.Location = new System.Drawing.Point(109, 263);
+            this.messageText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.messageText.Name = "messageText";
+            this.messageText.Size = new System.Drawing.Size(224, 22);
+            this.messageText.TabIndex = 7;
             // 
             // label4
             // 
@@ -88,30 +89,29 @@
             this.label4.TabIndex = 18;
             this.label4.Text = "Lora Communication";
             // 
-            // label3
+            // messageSentSuccess
             // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.DarkGreen;
-            this.label3.Location = new System.Drawing.Point(116, 369);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(171, 16);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "message sent successfully!";
+            this.messageSentSuccess.AutoSize = true;
+            this.messageSentSuccess.ForeColor = System.Drawing.Color.DarkGreen;
+            this.messageSentSuccess.Location = new System.Drawing.Point(116, 369);
+            this.messageSentSuccess.Name = "messageSentSuccess";
+            this.messageSentSuccess.Size = new System.Drawing.Size(171, 16);
+            this.messageSentSuccess.TabIndex = 19;
+            this.messageSentSuccess.Text = "message sent successfully!";
             // 
             // SendMessages
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.messageSentSuccess);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.sendMessage);
+            this.Controls.Add(this.messageText);
             this.Name = "SendMessages";
             this.Size = new System.Drawing.Size(800, 600);
-            this.Load += new System.EventHandler(this.SendMessages_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,10 +120,10 @@
         #endregion
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button sendMessage;
+        private System.Windows.Forms.TextBox messageText;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label messageSentSuccess;
     }
 }

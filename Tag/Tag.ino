@@ -11,15 +11,13 @@
 #define EEPROM_START_ADDR 0
 
 // Define the maximum number of users and the length of username and password
-#define MAX_USERS 5
-#define MAX_USERNAME_LENGTH 20
-#define MAX_PASSWORD_LENGTH 20
+#define MAX_USERS 3
 #define SHA256_BLOCK_SIZE 64
 
 
 // Struct to hold user data
 struct UserData {
-  char username[MAX_USERNAME_LENGTH];
+  char username[8];
   uint8_t passwordHash[SHA256_BLOCK_SIZE];
 };
 
@@ -81,12 +79,7 @@ void loop() {
   if (Serial.available()) {
     data = Serial.readString();
     d1 = data.charAt(0);
-    if (d1 == 'A') {
-      digitalWrite(led, HIGH);
-    }
-    if (d1 == 'a') {
-      digitalWrite(led, LOW);
-    }
+
     if (d1 == 'l') {
       char charArray[data.length() + 1];
       data.toCharArray(charArray, sizeof(charArray));
@@ -107,39 +100,50 @@ void loop() {
         token = strtok(NULL, ":");
         count++;
       }
-      //username.toCharArray(charArray, sizeof(charArray));
-    
 
       if (checkLogin(username.c_str(), password.c_str())) {
-        Serial.println("Login successful!");
-        // Do something here, like granting access, etc.
-      } else {
-        Serial.println("Login failed!");
-      }
+        Serial.println("login 1");
 
+      } else {
+        Serial.println("login 0");
+      }
+    }
+
+    if (d1 == 's') {
+      data = data.substring(5);
+      // Read the incoming message
+
+      data.toCharArray(uMessage, sizeof(uMessage));
+
+
+      // char* token = strtok(uMessage, ":");
+      // String s, message;
+
+      // int count = 0;
+      // while (token != NULL) {
+      //   if (count == 0) {
+      //     s = String(token);
+      //   } else if (count == 1) {
+      //     message = String(token);
+      //   }
+      //   token = strtok(NULL, ":");
+      //   count++;
+      // }
+
+      // message.toCharArray(uMessage, sizeof(uMessage));
+
+      // memset(uMessage, 0, sizeof(uMessage));                                          // Clear the previous message
+      int messageSize = data.length();  // Read new message
+      // uMessage[messageSize] = '\0';                                                   // Ensure null-termination
+      if (messageSize > 0) {
+        Serial.print("New message received: ");
+        Serial.println(uMessage);
+        sendMessage();
+        lastTransmit = millis();                // Reset the timer after immediate send
+        memset(uMessage, 0, sizeof(uMessage));  // Clear message after sending
+      }
     }
   }
-
-  // if (Serial.available() > 0) {
-  //   // Read the incoming message
-  //   memset(uMessage, 0, sizeof(uMessage));                                          // Clear the previous message
-  //   int messageSize = Serial.readBytesUntil('\n', uMessage, sizeof(uMessage) - 1);  // Read new message
-  //   uMessage[messageSize] = '\0';                                                   // Ensure null-termination
-  //   if (messageSize > 0) {
-  //     Serial.print("New message received: ");
-  //     Serial.println(uMessage);
-  //     sendMessage();
-  //     lastTransmit = millis();                // Reset the timer after immediate send
-  //     memset(uMessage, 0, sizeof(uMessage));  // Clear message after sending
-  //   }
-  // }
-
-  // // Check if it's time to send a message
-  // if (currentMillis - lastTransmit >= TXINTERVAL && strlen(uMessage) > 0) {
-  //   sendMessage();
-  //   lastTransmit = millis();                // Reset the timer after scheduled send
-  //   memset(uMessage, 0, sizeof(uMessage));  // Clear message after sending
-  // }
 }
 
 void sendMessage() {
@@ -177,9 +181,9 @@ void sendMessage() {
     }
 
     // Transmit message
-    Serial.print("Transmitted message: ");  // DEBUG
-    Serial.println((char*)buf);             // DEBUG
-    myDriver.send(buf, len);                // Send only the actual message length
+    //Serial.print("Transmitted message: ");  // DEBUG
+    //Serial.println((char*)buf);             // DEBUG
+    myDriver.send(buf, len);  // Send only the actual message length
     myDriver.waitPacketSent();
   }
 }
@@ -191,19 +195,33 @@ void initializeUsers() {
   for (int i = 0; i < MAX_USERS; i++) {
     EEPROM.get(EEPROM_START_ADDR + i * sizeof(UserData), users[i]);
   }
+  // Serial.println("EEPROM content before initialization:");
+  // for (int i = 0; i < MAX_USERS; i++) {
+  //   Serial.print("User ");
+  //   Serial.print(i);
+  //   Serial.print(": ");
+  //   Serial.print(users[i].username);
+  //   Serial.print(" - Hash: ");
+  //   for (int j = 0; j < SHA256_BLOCK_SIZE; j++) {
+  //     Serial.print(users[i].passwordHash[j], HEX);
+  //     Serial.print(" ");
+  //   }
+  //   Serial.println();
+  // }
 
   // If EEPROM is blank, initialize with default users (for demonstration purposes)
   if (isEEPROMBlank()) {
-    strcpy(users[0].username, "user1");
-    hashPassword("password123", users[0].passwordHash);
+  strcpy(users[0].username, "user");
+  hashPassword("password", users[0].passwordHash);
+  strcpy(users[1].username, "gohil");
+  hashPassword("kartavya", users[1].passwordHash);
 
-    strcpy(users[1].username, "user2");
-    hashPassword("password456", users[1].passwordHash);
 
-    // Write default users to EEPROM
-    for (int i = 0; i < MAX_USERS; i++) {
-      EEPROM.put(EEPROM_START_ADDR + i * sizeof(UserData), users[i]);
-    }
+
+  // Write default users to EEPROM
+  for (int i = 0; i < MAX_USERS; i++) {
+    EEPROM.put(EEPROM_START_ADDR + i * sizeof(UserData), users[i]);
+  }
   }
 }
 
@@ -216,7 +234,7 @@ bool checkLogin(const char* username, const char* password) {
   }
 
   // Compute hash of input password
-  uint8_t inputHash[32]; // SHA256 produces 32-byte hashes
+  uint8_t inputHash[32];  // SHA256 produces 32-byte hashes
   hashPassword(password, inputHash);
 
   // Compare hashes
@@ -255,8 +273,8 @@ void hashPassword(const char* password, uint8_t* hash) {
 bool isEEPROMBlank() {
   for (int i = 0; i < EEPROM.length(); i++) {
     if (EEPROM.read(i) != 0xFF) {
-      return false; // EEPROM is not blank
+      return false;  // EEPROM is not blank
     }
   }
-  return true; // EEPROM is blank
+  return true;  // EEPROM is blank
 }

@@ -28,45 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.username = new System.Windows.Forms.TextBox();
+            this.password = new System.Windows.Forms.TextBox();
+            this.loginAsSenderButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.loginAsReceiverButton = new System.Windows.Forms.Button();
+            this.loginFailedMessage = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // username
             // 
-            this.textBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.OutlineButton;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.textBox1.Location = new System.Drawing.Point(68, 226);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(224, 26);
-            this.textBox1.TabIndex = 0;
+            this.username.AccessibleRole = System.Windows.Forms.AccessibleRole.OutlineButton;
+            this.username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.username.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.username.Location = new System.Drawing.Point(68, 226);
+            this.username.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.username.Name = "username";
+            this.username.Size = new System.Drawing.Size(224, 26);
+            this.username.TabIndex = 0;
             // 
-            // textBox2
+            // password
             // 
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.Location = new System.Drawing.Point(68, 294);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(224, 26);
-            this.textBox2.TabIndex = 1;
+            this.password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.password.Location = new System.Drawing.Point(68, 294);
+            this.password.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.password.Name = "password";
+            this.password.Size = new System.Drawing.Size(224, 26);
+            this.password.TabIndex = 1;
             // 
-            // button1
+            // loginAsSenderButton
             // 
-            this.button1.Location = new System.Drawing.Point(68, 355);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(96, 44);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Login";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.loginAsSenderButton.Location = new System.Drawing.Point(68, 391);
+            this.loginAsSenderButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.loginAsSenderButton.Name = "loginAsSenderButton";
+            this.loginAsSenderButton.Size = new System.Drawing.Size(121, 44);
+            this.loginAsSenderButton.TabIndex = 2;
+            this.loginAsSenderButton.Text = "Login (Sender)";
+            this.loginAsSenderButton.UseVisualStyleBackColor = true;
+            this.loginAsSenderButton.Click += new System.EventHandler(this.LoginAsSender_Click);
             // 
             // label1
             // 
@@ -106,18 +108,41 @@
             this.label4.TabIndex = 6;
             this.label4.Text = "Lora Communication";
             // 
+            // loginAsReceiverButton
+            // 
+            this.loginAsReceiverButton.Location = new System.Drawing.Point(205, 391);
+            this.loginAsReceiverButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.loginAsReceiverButton.Name = "loginAsReceiverButton";
+            this.loginAsReceiverButton.Size = new System.Drawing.Size(183, 44);
+            this.loginAsReceiverButton.TabIndex = 7;
+            this.loginAsReceiverButton.Text = "Login (Receiver)";
+            this.loginAsReceiverButton.UseVisualStyleBackColor = true;
+            this.loginAsReceiverButton.Click += new System.EventHandler(this.LoginAsReceiver_Click);
+            // 
+            // loginFailedMessage
+            // 
+            this.loginFailedMessage.AutoSize = true;
+            this.loginFailedMessage.ForeColor = System.Drawing.Color.Red;
+            this.loginFailedMessage.Location = new System.Drawing.Point(65, 335);
+            this.loginFailedMessage.Name = "loginFailedMessage";
+            this.loginFailedMessage.Size = new System.Drawing.Size(230, 20);
+            this.loginFailedMessage.TabIndex = 8;
+            this.loginFailedMessage.Text = "Login failed invalid credentials";
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
+            this.Controls.Add(this.loginFailedMessage);
+            this.Controls.Add(this.loginAsReceiverButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.loginAsSenderButton);
+            this.Controls.Add(this.password);
+            this.Controls.Add(this.username);
             this.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Login";
@@ -129,12 +154,14 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox username;
+        private System.Windows.Forms.TextBox password;
+        private System.Windows.Forms.Button loginAsSenderButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button loginAsReceiverButton;
+        private System.Windows.Forms.Label loginFailedMessage;
     }
 }
