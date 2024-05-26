@@ -6,55 +6,46 @@
 #include <Crypto.h>
 #include <SHA256.h>
 
-// Define the EEPROM starting address to store user data
+#define RECEIVE_BUFFER_SIZE 5
+#define MESSAGELENGTH 50
+
 #define EEPROM_START_ADDR 0
+#define MAX_USERS 2
+#define MAX_USERNAME_LENGTH 8
+#define SHA256_BLOCK_SIZE 32
 
-// Define the maximum number of users and the length of username and password
-#define MAX_USERS 3            // Reduced to save space
-#define MAX_USERNAME_LENGTH 8  // Reduced to save space
-#define MAX_PASSWORD_LENGTH 8  // Reduced to save space
-#define SHA256_BLOCK_SIZE 64   // Correct block size for SHA256
+struct Message {
+  uint8_t seq;
+  char content[MESSAGELENGTH];
+  int rssi;
+  uint8_t senderID;
+  uint8_t destinationID;
+};
 
-// Struct to hold user data
+Message receiveBuffer[RECEIVE_BUFFER_SIZE];
+int bufferIndex = 0;
+
 struct UserData {
   char username[MAX_USERNAME_LENGTH];
   uint8_t passwordHash[SHA256_BLOCK_SIZE];
 };
 
-// Array to store user data
 UserData users[MAX_USERS];
 
-// Singleton instance of the radio driver
 RH_RF95 rf95;
-AES128 myCipher;                             // Instanciate a Speck block ciphering
+AESSmall128 myCipher;  // Instantiate AES block ciphering
 RHEncryptedDriver myDriver(rf95, myCipher);  // Instantiate the driver with those two
 
 const uint8_t encryptkey[16] = "abcdabcdabcdabcd";  // The very secret key
-
-// Message fields
-uint8_t SEQ = 0;    // Sequence number
-uint8_t TYPE = 0;   // Message type
-uint8_t TAGID = 1;  // Identity of tag. Will eventually be read from an SD card.
-uint8_t RELAYID = 0;
-uint8_t TTL = 5;
-uint8_t thisRSSI = 5;
-uint8_t firstIteration = 0;  // First time through main loop send a reset (kludge, I know. Should go in setup.
-
-unsigned long TXINTERVAL = 10000;  // Time between transmissions (in ms), increased to 10 seconds
-unsigned long lastTransmit = 0;    // Last transmit time
-
-char uMessage[30];  // User message buffer reduced to 30 characters
-
-// to communicate with GUI
-String data;
-char d1;
+uint8_t RECEIVER_ID = 1;  // Default receiver ID
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
   Serial.println("Receiver Version 1");
-  while (!Serial)
-    Serial.println("Waiting for serial port");  // Wait for serial port to be available.
+  while (!Serial) {
+    // Waiting for serial port to be available
+  }
   while (!rf95.init()) {
     Serial.println("Initialisation of LoRa receiver failed");
     delay(1000);
@@ -64,15 +55,15 @@ void setup() {
   rf95.setTxPower(23, false);
   rf95.setSignalBandwidth(500000);
   rf95.setSpreadingFactor(12);
-  myCipher.setKey(encryptkey, 16);
+  myCipher.setKey(encryptkey, sizeof(encryptkey));
   Serial.println("Setup completed");
   initializeUsers();
 }
 
 void loop() {
   if (Serial.available()) {
-    data = Serial.readString();
-    d1 = data.charAt(0);
+    String data = Serial.readString();
+    char d1 = data.charAt(0);
 
     if (d1 == 'l') {
       char charArray[data.length() + 1];
@@ -95,49 +86,76 @@ void loop() {
         count++;
       }
 
-      // Debugging output
-      
-
       if (checkLogin(username.c_str(), password.c_str())) {
         Serial.println("login 1");
       } else {
         Serial.println("login 0");
       }
     }
+
+    if (d1 == 'r') {  // Set receiver ID
+      RECEIVER_ID = data.substring(2).toInt();
+      Serial.print("Receiver ID set to: ");
+      Serial.println(RECEIVER_ID);
+    }
   }
 
   if (myDriver.available()) {
-    // Should be a message for us now
     uint8_t buf[myDriver.maxMessageLength()];
     uint8_t len = sizeof(buf);
+
     if (myDriver.recv(buf, &len)) {
-      char str[len];
-      strcpy(str, (char*)&buf);
-      sscanf(str, "%5d %5d %5d %5d %5d %5d", &SEQ, &TYPE, &TAGID, &RELAYID, &TTL, &thisRSSI);
-      memmove(str, str + 36, strlen(str) - 36 + 1);
-      // Now display
-      Serial.print("Seq ");
-      Serial.print(SEQ);
-      Serial.print(" Type ");
-      Serial.print(TYPE);
-      Serial.print(" Tag ");
-      Serial.print(TAGID);
-      Serial.print(" Relay ");
-      Serial.print(RELAYID);
-      Serial.print(" TTL ");
-      Serial.print(TTL);
-      Serial.print(" RSSI ");
-      Serial.print(thisRSSI);
-      Serial.print(" RSSI ");
-      Serial.print(myDriver.lastRssi());
-      Serial.println(" ");
-      Serial.print(" Message: ");
-      Serial.println(str);
-      Serial.println(" ");
+      buf[len] = '\0';  // Null-terminate the message
+
+      uint8_t seq;
+      uint8_t type;
+      uint8_t tagID;
+      uint8_t relayID;
+      uint8_t ttl;
+      uint8_t rssi;
+      uint8_t senderID;
+      uint8_t destinationID;
+      char content[MESSAGELENGTH];
+
+      int numFields = sscanf((char*)buf, "%5hhu %5hhu %5hhu %5hhu %5hhu %5hhu %5hhu %5hhu %[^\n]", &seq, &type, &tagID, &relayID, &ttl, &rssi, &senderID, &destinationID, content);
+
+      if (numFields == 9) {  // Ensure we got all expected fields
+        if (destinationID == RECEIVER_ID) {
+          Serial.print("Seq: ");
+          Serial.print(seq);
+          Serial.print(" Sender: ");
+          Serial.println(senderID);
+          //Serial.print(" Destination: ");
+          //Serial.print(destinationID);
+          //Serial.print(" Content: ");
+          Serial.println(content);
+          Serial.print(" =RSSI: ");
+          Serial.println(myDriver.lastRssi());
+        } else {
+          Serial.println("Message not for this receiver, rebroadcasting...");
+          rebroadcastMessage(buf, len);
+        }
+      } else {
+        Serial.println("Failed to parse message");
+      }
     } else {
       Serial.println("recv failed");
     }
   }
+}
+
+void rebroadcastMessage(uint8_t* buf, uint8_t len) {
+  rf95.setModeIdle();  // some obscure bug causing loss of every second message
+
+  // Channel should be idle but if not wait for it to go idle
+  while (myDriver.isChannelActive()) {
+    delay(10);  // wait for channel to go idle by checking frequently
+    Serial.println("Rebroadcast node looping on isChannelActive()");  // DEBUG
+  }
+
+  myDriver.send(buf, len);  // Send only the actual message length
+  myDriver.waitPacketSent();
+  Serial.println("Message rebroadcasted");
 }
 
 void initializeUsers() {
@@ -151,8 +169,8 @@ void initializeUsers() {
     strcpy(users[0].username, "user");
     hashPassword("password", users[0].passwordHash);
 
-    // Debugging output
-
+    strcpy(users[1].username, "gohil");
+    hashPassword("kartavya", users[1].passwordHash);
 
     // Write default users to EEPROM
     for (int i = 0; i < MAX_USERS; i++) {
@@ -170,23 +188,18 @@ bool checkLogin(const char* username, const char* password) {
   }
 
   // Compute hash of input password
-  uint8_t inputHash[32];  // SHA256 produces 32-byte hashes
+  uint8_t inputHash[SHA256_BLOCK_SIZE];  // SHA256 produces 32-byte hashes
   hashPassword(password, inputHash);
 
-  // Debugging output
-
-
-
-
   // Compare hashes
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < SHA256_BLOCK_SIZE; i++) {
     if (inputHash[i] != users[userIndex].passwordHash[i]) {
       // Hashes don't match
       return false;
     }
   }
 
-  return true;
+  return true;  // Hashes match
 }
 
 int findUser(const char* username) {
@@ -207,7 +220,7 @@ void hashPassword(const char* password, uint8_t* hash) {
   sha256.update((const uint8_t*)password, strlen(password));
 
   // Finalize the hash and store it in the provided buffer
-  sha256.finalize(hash, 32);
+  sha256.finalize(hash, SHA256_BLOCK_SIZE);
 }
 
 bool isEEPROMBlank() {
