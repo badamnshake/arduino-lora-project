@@ -36,39 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Avalonia, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Base, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Controls, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.DesignerSupport, Version=0.7.0.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.DesignerSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Dialogs, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Dialogs.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Markup, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Markup.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Markup.Xaml, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Markup.Xaml.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Metal, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.Metal.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.MicroCom, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.MicroCom.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.OpenGL, Version=11.0.10.0, Culture=neutral, PublicKeyToken=c8d484a7012f9a8b, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.11.0.10\lib\net461\Avalonia.OpenGL.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Remote.Protocol, Version=11.0.10.0, Culture=neutral, PublicKeyToken=7ecde292c616a9f3, processorArchitecture=MSIL">
-      <HintPath>packages\Avalonia.Remote.Protocol.11.0.10\lib\netstandard2.0\Avalonia.Remote.Protocol.dll</HintPath>
-    </Reference>
     <Reference Include="MicroCom.Runtime, Version=0.11.0.0, Culture=neutral, PublicKeyToken=b30be05a5f7688e9, processorArchitecture=MSIL">
       <HintPath>packages\MicroCom.Runtime.0.11.0\lib\netstandard2.0\MicroCom.Runtime.dll</HintPath>
     </Reference>
@@ -181,8 +148,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Avalonia.BuildServices.0.0.29\build\Avalonia.BuildServices.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Avalonia.BuildServices.0.0.29\build\Avalonia.BuildServices.targets'))" />
-    <Error Condition="!Exists('packages\Avalonia.11.0.10\build\Avalonia.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Avalonia.11.0.10\build\Avalonia.props'))" />
     <Error Condition="!Exists('packages\Avalonia.11.0.10\build\Avalonia.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Avalonia.11.0.10\build\Avalonia.targets'))" />
+    <Error Condition="!Exists('packages\Avalonia.11.0.10\build\Avalonia.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Avalonia.11.0.10\build\Avalonia.props'))" />
   </Target>
   <Import Project="packages\Avalonia.11.0.10\build\Avalonia.targets" Condition="Exists('packages\Avalonia.11.0.10\build\Avalonia.targets')" />
 </Project>
