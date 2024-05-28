@@ -35,7 +35,7 @@
             // arduino
             // 
             this.arduino.DtrEnable = true;
-            this.arduino.PortName = "COM9";
+            this.arduino.PortName = "COM3";
             // 
             // ArduinoUI
             // 
